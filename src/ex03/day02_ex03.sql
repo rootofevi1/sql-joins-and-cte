@@ -1,0 +1,24 @@
+WITH day AS (
+  SELECT
+    generate_series(
+      timestamp '2022-01-01', '2022-01-10',
+      '1 day'
+    ) AS day
+)
+SELECT
+  day :: date AS missing_date
+FROM
+  day
+  LEFT JOIN (
+    SELECT
+      DISTINCT visit_date
+    FROM
+      person_visits
+    WHERE
+      person_id = 1
+      OR person_id = 2
+  ) AS operation ON day :: date = operation.visit_date
+WHERE
+  operation.visit_date IS NULL
+ORDER BY
+  1;
